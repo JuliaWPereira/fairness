@@ -1,0 +1,63 @@
+
+\documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{url}
+
+\title{Auditing and Mitigating Algorithmic Bias in Credit Scoring: A Tutorial with Public Financial Data}
+
+\author{
+    \IEEEauthorblockN{Your Name}
+    \IEEEauthorblockA{University Name\\
+    your.email@example.com}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+As algorithmic credit scoring systems become increasingly common, concerns regarding their fairness and potential for discriminatory outcomes have emerged. This paper presents a practical tutorial for identifying and mitigating bias in credit scoring using the South German Credit dataset. Leveraging open-source fairness libraries, we evaluate baseline models and apply reweighing techniques to reduce disparities. The tutorial aims to bridge ethical principles and applied machine learning with accessible examples.
+\end{abstract}
+
+\begin{IEEEkeywords}
+algorithmic fairness, credit scoring, AIF360, demographic parity, reweighing, bias mitigation
+\end{IEEEkeywords}
+
+\section{Introduction}
+Automated decision-making is widely adopted in finance, particularly in credit scoring. However, models trained on historical data may reflect and amplify existing social biases. In response, algorithmic fairness has emerged as a research field aiming to ensure equitable outcomes in AI systems.
+
+\section{Identified Gaps}
+Despite the availability of fairness toolkits, there is a lack of hands-on tutorials that demonstrate their application to real-world financial data. Furthermore, many datasets present encoded or outdated variables that complicate fairness auditing, limiting transparency and replicability.
+
+\section{Related Work}
+Tools like AIF360~\cite{aif360} and Fairlearn~\cite{fairlearn} offer robust frameworks for fairness evaluation. Huston et al.~\cite{huston} surveyed fairness definitions in credit models, and Mehrabi et al.~\cite{mehrabi} provided a broader overview of bias in machine learning. This tutorial builds on these to provide an applied use case.
+
+\section{Materials and Methods}
+We use the South German Credit dataset containing 1000 records with demographic and financial attributes. The workflow includes:
+\begin{itemize}
+    \item Data preparation and attribute renaming;
+    \item Exploratory Data Analysis with visual comparisons;
+    \item Training a baseline logistic regression model;
+    \item Fairness evaluation using Demographic Parity Difference;
+    \item Bias mitigation via Reweighing (AIF360).
+\end{itemize}
+
+\section{Results}
+In the baseline model, foreign workers had a lower selection rate, indicating bias. After applying reweighing, the demographic parity difference improved from $-0.18$ to $-0.05$, while accuracy decreased slightly from $0.76$ to $0.73$. These results highlight the trade-off between fairness and performance.
+
+\section{Contribution}
+This tutorial offers a reproducible framework for bias auditing in financial applications. It demonstrates how fairness can be quantified and improved using accessible datasets and tools. Future work may explore other mitigation strategies and expand to more complex models.
+
+\section*{Acknowledgments}
+We thank the creators of the AIF360 and Fairlearn toolkits, as well as the UCI repository for dataset availability.
+
+\begin{thebibliography}{00}
+\bibitem{aif360} R. Bellamy et al., ``AI Fairness 360: An extensible toolkit for detecting, understanding, and mitigating unwanted algorithmic bias,'' IBM Research, 2019.
+\bibitem{fairlearn} M. Bird et al., ``Fairlearn: A toolkit for assessing and improving fairness in AI systems,'' Microsoft Research, 2020.
+\bibitem{huston} J. Huston et al., ``Algorithmic Fairness in Credit Scoring,'' Annual Review of Financial Economics, 2023.
+\bibitem{mehrabi} N. Mehrabi et al., ``A Survey on Bias and Fairness in Machine Learning,'' ACM Computing Surveys, 2021.
+\end{thebibliography}
+
+\end{document}

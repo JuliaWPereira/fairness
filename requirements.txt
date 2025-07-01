@@ -1,6 +1,10 @@
+ipykernel
+setuptools
 pandas
 seaborn
 numpy
 fairness
 matplotlib
 fastparquet
+ydata-profiling
+ipywidgets

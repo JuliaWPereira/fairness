@@ -1,0 +1,57 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{colortbl,xcolor}
+
+\lstdefinestyle{terminal}{
+  backgroundcolor=\color{gray!10},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  frame=single,
+  breaklines=true,
+  columns=fullflexible
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  backgroundcolor=\color{gray!5},
+  captionpos=b
+}
+
+
+
+\title{Detecting and Mitigating Algorithmic Bias in Credit Models: A Tutorial Using Public Financial Data}
+
+\author{
+    \IEEEauthorblockN{Júlia Wotzasek Pereira}
+    \IEEEauthorblockA{\textit{Universidade Federal de São Paulo - UNIFESP} \\
+    pereira.julia@unifesp.br}
+}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/00_abstract}
+\input{sections/01_introduction}
+\input{sections/02_identified_gaps}
+\input{sections/03_related_work}
+\input{sections/04_materials_and_methods}
+\input{sections/05_state_of_the_art}
+\input{sections/06_expected_contribution}
+\input{sections/07_acknowledgement}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

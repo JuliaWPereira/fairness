@@ -1,0 +1,182 @@
+\section{Theoretical Foundations}
+
+\subsection{Algorithmic Bias: Definition and Origins}
+
+Algorithmic bias refers to systemic tendencies in AI models that result in unfair or unequal treatment of individuals or groups \cite{barocas2016big,mehrabi2021survey}. These biases may arise unintentionally and often reflect historical inequalities embedded in training data or system design choices. In the context of credit scoring, for example, a model trained on past lending decisions may disproportionately reject applicants from minority backgrounds, perpetuating past discrimination.
+
+Common sources of algorithmic bias include:
+
+\begin{itemize}
+    \item \textbf{Biased training data:} Historical datasets often encode human prejudices or institutional inequalities \cite{barocas2016big}.
+    \item \textbf{Non-representative samples:} Poor sampling can underrepresent minority groups, skewing model behavior.
+    \item \textbf{Optimization objectives:} Models that maximize overall accuracy may inadvertently harm minority subgroups \cite{mehrabi2021survey}.
+    \item \textbf{Proxy variables:} Even when sensitive attributes like race or gender are removed, correlated features may leak this information \cite{bellamy2019aif360}.
+\end{itemize}
+
+\subsection{Algorithmic Fairness: Group vs. Individual}
+
+Algorithmic fairness seeks to ensure that automated decisions treat people equitably. Two primary frameworks exist:
+
+\subsubsection{Group Fairness}
+
+Group fairness ensures that aggregated outcomes (e.g., approval rates, error rates) are similar across demographic groups \cite{hardt2016equality,mehrabi2021survey}.
+
+\begin{itemize}
+    \item \textbf{Demographic Parity:} Equal acceptance rates across groups.
+    \item \textbf{Equal Opportunity:} Equal true positive rates among qualified individuals.
+    \item \textbf{Equalized Odds:} Equal true and false positive rates across groups \cite{hardt2016equality}.
+\end{itemize}
+
+\subsubsection{Individual Fairness}
+
+Introduced by Dwork et al.~\cite{dwork2012fairness}, individual fairness states that similar individuals should receive similar outcomes. This requires a well-defined similarity metric over input features. While conceptually appealing, operationalizing this metric can be challenging.
+
+\subsection{Fairness Metrics in Machine Learning}
+
+To measure and mitigate algorithmic bias, researchers have defined several mathematical metrics that capture different aspects of fairness. Below are the most widely used metrics in binary classification tasks such as credit approval.
+
+\subsubsection{Demographic Parity (Statistical Parity)}
+
+A model satisfies \textbf{Demographic Parity} if the predicted positive rate is equal across all groups:
+\[
+P(\hat{Y} = 1 \mid A = a) = P(\hat{Y} = 1 \mid A = b)
+\]
+Where $A$ is a sensitive attribute (e.g., gender or nationality). This metric ensures that members of all groups have an equal chance of receiving a favorable outcome.
+
+\textit{Example:} If 70\% of male applicants are approved for credit, demographic parity would require that 70\% of female applicants are approved too.
+
+\textbf{Limitation:} This ignores whether individuals \textit{deserve} the positive outcome (i.e., are qualified).
+
+\subsubsection{Equal Opportunity (EO)}
+
+A model satisfies \textbf{Equal Opportunity} if the true positive rate (TPR) is equal across groups:
+\[
+P(\hat{Y} = 1 \mid Y = 1, A = a) = P(\hat{Y} = 1 \mid Y = 1, A = b)
+\]
+This ensures that among those who \textit{actually qualify}, the probability of approval is the same regardless of group.
+
+\textit{Example:} If qualified female applicants are approved 90\% of the time, then qualified male applicants should also be approved 90\% of the time.
+
+\textbf{Use case:} Suitable when we care most about fairness in access to opportunities for those who deserve them.
+
+\subsubsection{Equalized Odds (EOdds)}
+
+\textbf{Equalized Odds} requires that both the true positive rate (TPR) and false positive rate (FPR) are equal across groups:
+\begin{align*}
+P(\hat{Y} = y \mid Y = y, A = a) &= \nonumber \\
+P(\hat{Y} = y \mid Y = y, A = b), &\quad \text{for } y \in \{0,1\}
+\end{align*}
+
+
+\textit{Example:} Both the likelihood of correctly approving a qualified person (TPR) and the likelihood of incorrectly approving an unqualified person (FPR) must be the same across groups.
+
+\textbf{Advantage:} This is a stricter and more comprehensive fairness criterion.
+
+\textbf{Drawback:} It may be hard to satisfy when base rates (e.g., true default rates) differ between groups.
+
+\subsubsection{Predictive Parity}
+
+\textbf{Predictive Parity} requires equal precision across groups:
+\[
+P(Y = 1 \mid \hat{Y} = 1, A = a) = P(Y = 1 \mid \hat{Y} = 1, A = b)
+\]
+This ensures that among those predicted to succeed (e.g., repay credit), the success rate is equal for all groups.
+
+\subsubsection{Calibration}
+
+A classifier is \textbf{calibrated} if for individuals with the same predicted score, the probability of a positive outcome is the same across groups.
+
+\textit{Example:} If both men and women are assigned a credit score of 0.8, then both should have the same actual chance of repaying the loan.
+
+\subsection*{Trade-offs Between Metrics}
+
+It is mathematically impossible to satisfy all fairness metrics at the same time unless the base rates (e.g., real-world approval or repayment rates) are equal across groups \cite{hardt2016equality}. For example:
+
+\begin{itemize}
+    \item A model can be well-calibrated and satisfy predictive parity, but violate demographic parity.
+    \item Enforcing demographic parity may lower accuracy or increase false positives.
+    \item Equal Opportunity focuses on fairness among the qualified, while Demographic Parity ignores ground truth.
+\end{itemize}
+
+\subsection*{Implication for Practice}
+
+Choosing the appropriate fairness metric depends on legal, ethical, and domain-specific considerations. In credit scoring, regulators may prioritize avoiding \textit{disparate impact} (related to demographic parity), while practitioners may prefer equal opportunity to ensure fairness among qualified borrowers.
+
+
+\subsection{Sensitive Attributes and Proxies}
+
+Sensitive attributes include race, gender, age, and other legally protected or ethically sensitive categories \cite{barocas2016big}. Removing these attributes from the dataset does not eliminate bias, as proxy variables can leak correlated information \cite{mehrabi2021survey}.
+
+Examples of proxies include:
+
+\begin{itemize}
+    \item \texttt{ZIP code} as a proxy for race
+    \item \texttt{Employment duration} as a proxy for age
+    \item \texttt{Credit amount} as a proxy for gender roles
+\end{itemize}
+
+Identifying proxies involves statistical analysis, such as mutual information and correlation matrices.
+
+\subsection{Bias Mitigation Techniques}
+
+Bias mitigation techniques are categorized into three stages of the ML pipeline \cite{bellamy2019aif360,pessach2023algorithmic}:
+
+\subsubsection{Pre-processing}
+
+These methods modify the dataset before training:
+
+\begin{itemize}
+    \item \textbf{Reweighing:} Adjusts instance weights to equalize representation \cite{kamiran2012data}.
+    \item \textbf{Massaging:} Alters labels to correct historical disparities.
+    \item \textbf{Disparate Impact Remover:} Alters feature values to match distributions across groups \cite{feldman2015certifying}.
+\end{itemize}
+
+\subsubsection{In-processing}
+
+These techniques modify the training algorithm:
+
+\begin{itemize}
+    \item \textbf{Fairness regularization:} Penalizes unfair predictions during optimization \cite{kamishima2012fairness}.
+    \item \textbf{Fair constraints:} Adds fairness constraints (e.g., bounded disparity) \cite{zafar2017fairness}.
+    \item \textbf{Adversarial debiasing:} Trains a predictor and an adversary that tries to infer protected attributes.
+\end{itemize}
+
+\subsubsection{Post-processing}
+
+Post-hoc methods adjust predictions without retraining:
+
+\begin{itemize}
+    \item \textbf{Threshold adjustment:} Uses different decision thresholds per group.
+    \item \textbf{Reject Option Classification:} Alters uncertain predictions to favor disadvantaged groups \cite{kamiran2012data}.
+    \item \textbf{Output flipping:} Probabilistically changes outputs to equalize group outcomes \cite{hardt2016equality}.
+\end{itemize}
+
+\subsection{Limitations of Fairness Through Unawareness}
+
+Fairness through unawareness assumes that not using sensitive attributes ensures fairness \cite{corbett2018measure}. However, this is flawed because:
+
+\begin{itemize}
+    \item Proxy features can still leak sensitive information.
+    \item The model cannot monitor or correct disparities if it “ignores” group identity.
+    \item Intentional corrective action (e.g., affirmative mitigation) requires knowledge of group membership.
+\end{itemize}
+
+Modern fairness frameworks encourage active detection and correction of bias rather than passive ignorance.
+
+\subsubsection*{Affirmative Mitigation (Group-Aware Fairness)}
+
+An important alternative to ``fairness through unawareness'' is \textbf{affirmative mitigation}, which explicitly incorporates sensitive group membership into the modeling pipeline to reduce historical or structural inequality \cite{corbett2018measure,hardt2016equality,kamiran2012data}.
+
+Rather than ignoring sensitive attributes, this strategy uses them to:
+
+\begin{itemize}
+    \item Monitor disparities during training and evaluation,
+    \item Apply corrective mechanisms (e.g., reweighting, group-specific thresholds),
+    \item Favor disadvantaged groups in borderline decisions.
+\end{itemize}
+
+This is especially relevant when the data reflects prior discrimination or when “neutral” decisions reproduce inequality \cite{barocas2016big}. Affirmative mitigation acknowledges that fairness may require different treatment to reach equitable outcomes — a principle rooted in \textit{substantive equality}.
+
+One widely used technique is \textbf{Reject Option Classification} \cite{kamiran2012data}, which favors the disadvantaged group only in prediction regions with low model confidence. This approach improves fairness without degrading overall accuracy and is supported in toolkits like AIF360.
+
+Affirmative mitigation strategies are sometimes criticized for creating apparent disparities in treatment. However, they are often legally and ethically justified when aiming to correct unequal starting points \cite{corbett2018measure}.
