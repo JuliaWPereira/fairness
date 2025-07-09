@@ -8,3 +8,5 @@ matplotlib
 fastparquet
 ydata-profiling
 ipywidgets
+aif360
+tensorflow
